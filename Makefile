@@ -758,7 +758,7 @@ endif
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS   += -Os
 else
-KBUILD_CFLAGS   += -O2
+KBUILD_CFLAGS   += -O3
 endif
 
 ifdef CONFIG_CC_WERROR
@@ -954,6 +954,12 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
 
 # Require designated initializers for all marked structures
 KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
+
+# Vendor code trips this warning on GCC; clang is already covered above
+KBUILD_CFLAGS   += $(call cc-option,-Wno-misleading-indentation)
+
+# GCC 12+ false positives in copy_from_user() paths with -Werror
+KBUILD_CFLAGS   += $(call cc-option,-Wno-maybe-uninitialized)
 
 # change __FILE__ to the relative path from the srctree
 KBUILD_CFLAGS	+= $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
