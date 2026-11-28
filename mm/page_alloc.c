@@ -6799,7 +6799,13 @@ void setup_per_zone_wmarks(void)
 int __meminit init_per_zone_wmark_min(void)
 {
 	unsigned long lowmem_kbytes;
+	unsigned long ram_mb;
 	int new_min_free_kbytes;
+
+	ram_mb = totalram_pages() >> (20 - PAGE_SHIFT);
+	if (!extra_free_kbytes)
+		extra_free_kbytes = ram_mb >= 3500 ? 12288 :
+				    ram_mb >= 2500 ? 8192 : 4096;
 
 	lowmem_kbytes = nr_free_buffer_pages() * (PAGE_SIZE >> 10);
 	new_min_free_kbytes = int_sqrt(lowmem_kbytes * 16);
